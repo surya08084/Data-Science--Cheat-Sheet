@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vapor-policy-impact"
+version = "0.1.0"
+description = "Causal inference + counterfactual forecasting framework for state-level vapor policy impact on tobacco retail volume."
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.1",
+    "scipy>=1.11",
+    "statsmodels>=0.14",
+    "scikit-learn>=1.3",
+    "matplotlib>=3.8",
+]
+
+[tool.setuptools.packages.find]
+include = ["vapor_policy_impact*"]
+
+[tool.pytest.ini_options]
+markers = ["slow: exercises the full causal+forecasting stack end-to-end (still fast via the small_sim fixture)"]
