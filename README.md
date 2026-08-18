@@ -39,6 +39,10 @@ pip install -e .          # makes `vapor_policy_impact` importable
 
 python examples/run_demo.py     # full end-to-end run, ~10-15 minutes
 pytest tests/ -q                 # unit + integration tests, ~1-2 minutes
+
+# only needed to run/edit the notebook locally (Databricks needs none of this):
+pip install -r requirements-dev.txt
+jupyter notebook notebooks/vapor_policy_impact_databricks.ipynb
 ```
 
 `examples/run_demo.py` runs the whole pipeline for a simulated "new" state
@@ -48,11 +52,28 @@ reconciliation, Altria-vs-competitor decomposition, a leave-one-state-out
 validation run, and a placebo-in-time false-positive check. Outputs (tables
 as CSV, charts as PNG) are written to `examples/output/` (gitignored).
 
+## Databricks notebook
+
+[`notebooks/vapor_policy_impact_databricks.ipynb`](./notebooks/vapor_policy_impact_databricks.ipynb)
+is the same end-to-end walkthrough as `examples/run_demo.py`, as an
+importable `.ipynb` runnable in Databricks (or local Jupyter). Open it via
+**Databricks Repos** (clone this branch as a Repo, then open the notebook —
+it finds and imports `vapor_policy_impact` automatically) or `jupyter
+notebook` locally.
+
+It runs against the synthetic simulator by default. To point it at your own
+data, edit the single **Configuration** cell: set `USE_SYNTHETIC_DATA =
+False`, a `DATA_SOURCE_PATH` (a Delta table, Parquet, or CSV path on
+DBFS/a Volume), and a `COLUMN_MAPPING` dict from our internal column names to
+yours — everything after that cell is unchanged either way. The real-data
+loading is implemented in `vapor_policy_impact/data/loaders.py`.
+
 ## Package structure -> methodology section
 
 | Module | Methodology section | What it does |
 |---|---|---|
 | `vapor_policy_impact/data/simulate.py` | "Available Data" | Synthetic state x category x manufacturer x week panel with a known injected effect |
+| `vapor_policy_impact/data/loaders.py` | "Available Data" | Real-data counterpart to `simulate.py`: column mapping, date-to-week-index conversion, policy calendar + state-covariates loading from a Delta/Parquet/CSV source |
 | `vapor_policy_impact/features/engineering.py` | 2. Data preparation | Event-time alignment, transforms, lags/momentum/seasonality |
 | `vapor_policy_impact/causal/event_study.py` | 4-5. Causal methodology (Layer 1) | Staggered-adoption event study / DiD -> pooled ATT(e) |
 | `vapor_policy_impact/causal/synthetic_control.py` | 4-5 (Layer 2) | Donor-pool synthetic control, used both retrospectively and as the new-state baseline template |

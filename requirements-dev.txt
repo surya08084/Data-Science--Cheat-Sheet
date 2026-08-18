@@ -1,0 +1,8 @@
+# Only needed to locally build/execute notebooks/vapor_policy_impact_databricks.ipynb
+# for development or verification -- a Databricks cluster runs .ipynb natively and does
+# not need any of this. Not required to use the vapor_policy_impact package or run
+# examples/run_demo.py; see requirements.txt for that.
+jupyter>=1.0
+nbconvert>=7.0
+ipykernel>=6.0
+nbformat>=5.9
